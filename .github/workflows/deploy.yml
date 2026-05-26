@@ -3,6 +3,10 @@ name: Deploy to AKS
 on:
   push:
     branches: [main]
+    paths:
+      - "**/*.tf"
+      - "**/*.tfvars"
+      - ".github/workflows/*.yml"
 
   workflow_dispatch:
     inputs:
