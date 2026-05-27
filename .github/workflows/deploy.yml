@@ -36,7 +36,7 @@ jobs:
 
     env:
       ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-      ARM_TENTANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       AKS_CLUSTER: ${{ vars.AKS_CLUSTER }}
@@ -51,7 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Azure login
+      - name: Azure login using OIDC
         uses: azure/login@v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}

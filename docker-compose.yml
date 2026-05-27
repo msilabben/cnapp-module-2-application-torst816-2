@@ -1,17 +1,4 @@
 services:
-  workspace:
-    build:
-      context: ./.devcontainer
-      dockerfile: Dockerfile
-    volumes:
-      - .:/workspaces/${localWorkspaceFolderBasename}:cached
-    command: sleep infinity
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - appnet
-
   backend:
     build:
       context: ./backend
