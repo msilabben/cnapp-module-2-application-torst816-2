@@ -64,11 +64,11 @@ jobs:
 
       - name: Deploy images for app 
         run: |
-          kubectl create namespace cnapp
+          kubectl apply namespace cnapp
 
           IMAGE="${ACR_NAME}.azurecr.io/${IMAGE_NAME_BACKEND}:${VERSION}"
 
-          kubectl create deployment backend \
+          kubectl apply deployment backend \
             --namespace cnapp \
             --image "$IMAGE" \
             --port 8000
@@ -82,7 +82,7 @@ jobs:
 
           IMAGE="${ACR_NAME}.azurecr.io/${IMAGE_NAME_FRONTEND}:${VERSION}"
 
-          kubectl create deployment backend \
+          kubectl apply deployment backend \
             --namespace cnapp \
             --image "$IMAGE" \
             --port 3000
