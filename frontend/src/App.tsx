@@ -57,7 +57,7 @@ export default function App() {
           </div>
           <div className="mini-card">
             <h3>Deploy</h3>
-            <p>Each service ships with its own Dockerfile</p>
+            <p>Each ships with its own Dockerfile</p>
           </div>
         </div>
       </div>
