@@ -22,6 +22,9 @@ spec:
           ports:
             - name: http
               containerPort: 8000
+          env:
+            - name: SECRETS_DIR
+              value: /mnt/secrets-store
           volumeMounts:
             - name: keyvault-secrets
               mountPath: /mnt/secrets-store
@@ -48,4 +51,4 @@ spec:
   ports:
     - name: http
       port: 8000
-      targetPort: 8000
+      targetPort: http
