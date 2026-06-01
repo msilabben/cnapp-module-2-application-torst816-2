@@ -40,7 +40,7 @@ def create_app():
         return {"status": "ok"}
 
     @app.get("/api/secret")
-    def health_check():
+    def secret_check():
         return {"secret": read_secret("backend-secret")}
 
     @app.get("/api/version")
