@@ -42,8 +42,8 @@ jobs:
       RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       AKS_CLUSTER: ${{ vars.AKS_CLUSTER }}
       ACR_NAME: ${{ vars.ACR_NAME }}
-      IMAGE_NAME_BACKEND: ${{ vars.IMAGE_NAME_BACKEND }}
-      IMAGE_NAME_FRONTEND: ${{ vars.IMAGE_NAME_FRONTEND }}
+      IMAGE_NAME_BACKEND: backend
+      IMAGE_NAME_FRONTEND: frontend
       FRONTEND_VERSION: ${{ inputs.frontend_image_version }}
       BACKEND_VERSION: ${{ inputs.backend_image_version }}
       AGFC_NAME: ${{ vars.AGFC_NAME }}
@@ -110,6 +110,9 @@ jobs:
             --name $AGFC_NAME \
             --query id \
             --output tsv)
+          
+          echo "AGFC_ID=$AGFC_ID" >> "$GITHUB_ENV"
+          echo "AGFC_FRONTEND_NAME=$AGFC_FRONTEND_NAME" >> "$GITHUB_ENV"
 
           echo $AGFC_ID
           echo $AGFC_FRONTEND_NAME
