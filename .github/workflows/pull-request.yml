@@ -1,11 +1,21 @@
 name: pull request
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
+  packages: read
   security-events: write
+
+env:
+  COSIGN_CERTIFICATE_IDENTITY: https://github.com/REPLACE_WITH_IMAGE_REPO_OWNER/REPLACE_WITH_IMAGE_REPO/.github/workflows/push-main.yml@refs/heads/main
+  COSIGN_CERTIFICATE_OIDC_ISSUER: https://token.actions.githubusercontent.com
+
+  SEMGREP_IMAGE: ghcr.io/REPLACE_WITH_GHCR_OWNER/semgrep@sha256:REPLACE_WITH_SEMGREP_DIGEST
+  TRIVY_IMAGE: ghcr.io/REPLACE_WITH_GHCR_OWNER/trivy@sha256:REPLACE_WITH_TRIVY_DIGEST
+  CONFTEST_IMAGE: ghcr.io/REPLACE_WITH_GHCR_OWNER/conftest@sha256:REPLACE_WITH_CONFTEST_DIGEST
 
 jobs:
   pre-commit:
@@ -13,9 +23,9 @@ jobs:
     runs-on: ubuntu-22.04
     name: Run pre-commit
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
-    - uses: pre-commit/action@v3.0.1
+      - uses: actions/checkout@REPLACE_WITH_PINNED_SHA
+      - uses: actions/setup-python@REPLACE_WITH_PINNED_SHA
+      - uses: pre-commit/action@REPLACE_WITH_PINNED_SHA
 
   gitleaks:
     if: false # Remove this to enable gitleaks
@@ -28,26 +38,45 @@ jobs:
       working-directory: backend
       python-version: "3.11"
 
-
   semgrep:
     if: false # Remove this to enable SAST with semgrep
     runs-on: ubuntu-22.04
-    container:
-      image: semgrep/semgrep:1.160.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@REPLACE_WITH_PINNED_SHA
+
+      - name: Log in to GHCR
+        uses: docker/login-action@REPLACE_WITH_PINNED_SHA
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@REPLACE_WITH_PINNED_SHA
+
+      - name: Verify Semgrep image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${SEMGREP_IMAGE}"
 
       - name: Run Semgrep
-        run: semgrep scan --sarif --sarif-output=semgrep_results.sarif
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${SEMGREP_IMAGE}" \
+            semgrep scan --sarif --sarif-output=semgrep_results.sarif
 
       - name: Upload Semgrep SARIF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@REPLACE_WITH_PINNED_SHA
         with:
           name: semgrep-results
           path: semgrep_results.sarif
 
       - name: Upload Semgrep SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@REPLACE_WITH_PINNED_SHA
         with:
           sarif_file: semgrep_results.sarif
           category: semgrep
@@ -55,22 +84,42 @@ jobs:
   trivy:
     if: false # Remove this to enable SAST/SCA with trivy
     runs-on: ubuntu-22.04
-    container:
-      image: aquasec/trivy:0.70.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@REPLACE_WITH_PINNED_SHA
+
+      - name: Log in to GHCR
+        uses: docker/login-action@REPLACE_WITH_PINNED_SHA
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@REPLACE_WITH_PINNED_SHA
+
+      - name: Verify Trivy image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${TRIVY_IMAGE}"
 
       - name: Run Trivy
-        run: trivy fs --format sarif -o trivy_results.sarif --scanners vuln,config,secret,license .
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${TRIVY_IMAGE}" \
+            trivy fs --format sarif -o trivy_results.sarif --scanners vuln,config,secret,license .
 
       - name: Upload Trivy SARIF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@REPLACE_WITH_PINNED_SHA
         with:
           name: trivy-results
           path: trivy_results.sarif
 
       - name: Upload Trivy SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@REPLACE_WITH_PINNED_SHA
         with:
           sarif_file: trivy_results.sarif
           category: trivy
@@ -79,18 +128,41 @@ jobs:
     if: false # Remove this to enable Policy as Code (PaC) with Open Policy Agent
     needs: [semgrep, trivy]
     runs-on: ubuntu-22.04
-    container:
-      image: openpolicyagent/conftest:v0.59.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@REPLACE_WITH_PINNED_SHA
+
+      - name: Log in to GHCR
+        uses: docker/login-action@REPLACE_WITH_PINNED_SHA
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@REPLACE_WITH_PINNED_SHA
+
+      - name: Verify Conftest image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${CONFTEST_IMAGE}"
 
       - name: Download SARIF artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@REPLACE_WITH_PINNED_SHA
 
       - name: Verify Semgrep findings
-        run: conftest test semgrep-results/semgrep_results.sarif --parser json --policy policy/semgrep.rego
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${CONFTEST_IMAGE}" \
+            conftest test semgrep-results/semgrep_results.sarif --parser json --policy policy/semgrep.rego
 
       - name: Verify Trivy findings
-        run: conftest test trivy-results/trivy_results.sarif --parser json --policy policy/trivy.rego
-
- 
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${CONFTEST_IMAGE}" \
+            conftest test trivy-results/trivy_results.sarif --parser json --policy policy/trivy.rego
