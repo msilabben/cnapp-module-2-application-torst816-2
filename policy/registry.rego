@@ -4,7 +4,7 @@ allowed_prefix := "ghcr.io/msilabben/"
 
 deny[msg] {
   some job_name
-  image := input.jobs[job_name].container.image
+  image := jobs[job_name].container.image
 
   not startswith(image, allowed_prefix)
 
