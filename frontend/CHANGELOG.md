@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/msilabben/cnapp-module-2-application/compare/frontend@v1.3.0...frontend@v1.3.1) (2026-06-14)
+
+
+### Bug Fixes
+
+* **backend:** trigger release ([a12eb93](https://github.com/msilabben/cnapp-module-2-application/commit/a12eb938a7cbd146782c538128cd662747f04dfb))
+* use docker hardened images ([97dc22c](https://github.com/msilabben/cnapp-module-2-application/commit/97dc22c591328b44fcc3c5958ceebe7cab98a58e))
+
 ## [1.3.0](https://github.com/msilabben/cnapp-module-2-application/compare/frontend@v1.2.2...frontend@v1.3.0) (2026-06-12)
 
 

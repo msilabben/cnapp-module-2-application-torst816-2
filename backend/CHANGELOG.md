@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.4](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.3...backend@v0.4.4) (2026-06-14)
+
+
+### Bug Fixes
+
+* **backend:** trigger release ([a12eb93](https://github.com/msilabben/cnapp-module-2-application/commit/a12eb938a7cbd146782c538128cd662747f04dfb))
+* stuffing ([7b287d0](https://github.com/msilabben/cnapp-module-2-application/commit/7b287d06687068a1a540f6d5cd6e0a2be12aeca5))
+* stuffing ([a7d4c09](https://github.com/msilabben/cnapp-module-2-application/commit/a7d4c0989aa9e4aa730262d63d2f50a94f691856))
+* use docker hardened images ([97dc22c](https://github.com/msilabben/cnapp-module-2-application/commit/97dc22c591328b44fcc3c5958ceebe7cab98a58e))
+
 ## [0.4.3](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.2...backend@v0.4.3) (2026-06-14)
 
 
