@@ -4,10 +4,10 @@ on:
   workflow_call:
     inputs:
       image-name:
-        required: false
+        required: true
         type: string
       context:
-        required: false
+        required: true
         type: string
       dockerfile:
         required: false
