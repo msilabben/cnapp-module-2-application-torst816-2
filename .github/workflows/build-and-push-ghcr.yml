@@ -39,14 +39,14 @@ jobs:
         run: echo "images=$(python3 scripts/discover-images.py)" >> "$GITHUB_OUTPUT"
 
   publish:
-    name: Publish ${{ matrix.image.name }}
+    name: Publish ${{ inputs.image-name }}
     needs: discover
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     strategy:
       fail-fast: false
       matrix:
-        image: ${{ fromJSON(needs.discover.outputs.images) }}
+        image: ${{ inputs.image-name }}
 
     steps:
       - name: Checkout
@@ -62,19 +62,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ vars.ACR_NAME }}.azurecr.io/${{ inputs.image-name }}
+          tags: |
+            type=match,pattern=${{ inputs.image-name }}@v(.*),group=1
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
       - name: Build and publish image
         id: build
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
         with:
-          context: ${{ matrix.image.context }}
+          context: ${{ inputs.context }}
           target: final
           pull: true
           push: true
-          tags: ghcr.io/msilabben/${{ matrix.image.name }}:${{ matrix.image.version }}
-          labels: |
-            org.opencontainers.image.title=${{ matrix.image.name }}-wrapper
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.version=${{ matrix.image.version }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           provenance: true
 
       - name: Install Cosign
@@ -83,21 +90,21 @@ jobs:
       - name: Generate image SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
         with:
-          image: ghcr.io/msilabben/${{ matrix.image.name }}@${{ steps.build.outputs.digest }}
+          image: ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
           format: spdx-json
-          output-file: sbom-${{ matrix.image.name }}.spdx.json
+          output-file: sbom-${{ inputs.image-name }}.spdx.json
           upload-artifact: false
 
       - name: Sign published image digest
-        run: cosign sign --yes ghcr.io/msilabben/${{ matrix.image.name }}@${{ steps.build.outputs.digest }}
+        run: cosign sign --yes ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
 
       - name: Attest image SBOM
         run: |
           cosign attest \
             --yes \
-            --predicate sbom-${{ matrix.image.name }}.spdx.json \
+            --predicate sbom-${{ inputs.image-name }}.spdx.json \
             --type spdxjson \
-            ghcr.io/msilabben/${{ matrix.image.name }}@${{ steps.build.outputs.digest }}
+            ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
 
       - name: Write publish summary
         run: |
@@ -106,11 +113,11 @@ jobs:
             echo
             echo "| Field | Value |"
             echo "| --- | --- |"
-            echo "| Image | ghcr.io/msilabben/${{ matrix.image.name }} |"
+            echo "| Image | ghcr.io/msilabben/${{ inputs.image-name }} |"
             echo "| Tag | ${{ matrix.image.version }} |"
             echo "| Digest | ${{ steps.build.outputs.digest }} |"
-            echo "| Pinned reference | ghcr.io/msilabben/${{ matrix.image.name }}@${{ steps.build.outputs.digest }} |"
-            echo "| Upstream image | ${{ matrix.image.upstream }} |"
-            echo "| Source directory | ${{ matrix.image.context }} |"
+            echo "| Pinned reference | ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }} |"
+            echo "| Upstream image | ${{ inputs.image-upstream }} |"
+            echo "| Source directory | ${{ inputs.context }} |"
             echo "| SBOM | attached as a signed Cosign attestation |"
           } >> "$GITHUB_STEP_SUMMARY"
