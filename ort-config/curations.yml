@@ -1,5 +1,0 @@
-- id: "PyPI::pydantic:2.13.4"
-  curations:
-    comment: "Avoid duplicate VCS provenance scan result for pydantic by scanning the PyPI source artifact instead of the Git repository."
-    source_code_origins:
-      - ARTIFACT

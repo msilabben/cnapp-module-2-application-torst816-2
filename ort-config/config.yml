@@ -1,6 +1,0 @@
-ort:
-  packageCurationProviders:
-    - type: File
-      options:
-        path: "/project/ort-config/curations.yml"
-        mustExist: true
