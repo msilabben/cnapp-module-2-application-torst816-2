@@ -6,6 +6,7 @@ on:
 permissions:
   contents: read
   security-events: write
+  packages: read
 
 jobs:
   pre-commit:
