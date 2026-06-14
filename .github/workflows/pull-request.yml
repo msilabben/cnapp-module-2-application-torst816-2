@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/msilabben/semgrep:sha256-879a08e9850ff5cb858d39b79cc349b0d2993aa7bd912b34747a4001eba4b281
+    steps:
       - uses: actions/checkout@v4
 
       - name: Run Semgrep
