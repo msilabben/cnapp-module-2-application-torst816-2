@@ -9,7 +9,7 @@ from app.main import create_app
 
 @pytest.fixture(scope="session", autouse=True)
 def startup() -> Generator[None, None, None]:
-    print("Starting tests!!")
+    print("Starting tests!")
 
     yield
 
