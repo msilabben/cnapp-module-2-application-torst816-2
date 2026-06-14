@@ -1,0 +1,11 @@
+ort:
+  analyzer:
+    enabledPackageManagers:
+      - NPM
+
+  scanner:
+    config:
+      ScanCode:
+        commandLineNonConfig:
+          - "--processes"
+          - "1"
