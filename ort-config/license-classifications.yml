@@ -1,7 +1,4 @@
 categories:
-  - name: "permissive"
-    description: "Permissive open source licenses."
-
   - name: "copyleft"
     description: "Strong copyleft licenses that require legal review before use."
 
@@ -27,6 +24,14 @@ categorizations:
       - "copyleft"
 
   - id: "GPL-3.0-or-later"
+    categories:
+      - "copyleft"
+
+  - id: "AGPL-1.0-only"
+    categories:
+      - "copyleft"
+
+  - id: "AGPL-1.0-or-later"
     categories:
       - "copyleft"
 
