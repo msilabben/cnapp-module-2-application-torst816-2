@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.5](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.4...backend@v0.4.5) (2026-06-14)
+
+
+### Bug Fixes
+
+* test ([150ec1e](https://github.com/msilabben/cnapp-module-2-application/commit/150ec1e29f817b5f93390d14e94ff4da3f5f9ab8))
+* test ([9bed964](https://github.com/msilabben/cnapp-module-2-application/commit/9bed964d5df2542155279e479eeff77cfdf53c9f))
+
 ## [0.4.4](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.3...backend@v0.4.4) (2026-06-14)
 
 
