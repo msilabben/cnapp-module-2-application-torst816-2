@@ -27,11 +27,7 @@ jobs:
   publish:
     name: Publish ${{ inputs.image-name }}
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    strategy:
-      fail-fast: false
-      matrix:
-        image: ${{ inputs.image-name }}
+    environment: ${{ inputs.environment }}  
 
     steps:
       - name: Checkout
