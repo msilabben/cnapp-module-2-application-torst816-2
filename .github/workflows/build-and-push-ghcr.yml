@@ -71,13 +71,13 @@ jobs:
       - name: Generate image SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
         with:
-          image: ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
+          image: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
           format: spdx-json
           output-file: sbom-${{ inputs.image-name }}.spdx.json
           upload-artifact: false
 
       - name: Sign published image digest
-        run: cosign sign --yes ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
+        run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
 
       - name: Attest image SBOM
         run: |
@@ -85,7 +85,7 @@ jobs:
             --yes \
             --predicate sbom-${{ inputs.image-name }}.spdx.json \
             --type spdxjson \
-            ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
+            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}
 
       - name: Write publish summary
         run: |
@@ -94,10 +94,10 @@ jobs:
             echo
             echo "| Field | Value |"
             echo "| --- | --- |"
-            echo "| Image | ghcr.io/msilabben/${{ inputs.image-name }} |"
+            echo "| Image | ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }} |"
             echo "| Tag | ${{ matrix.image.version }} |"
             echo "| Digest | ${{ steps.build.outputs.digest }} |"
-            echo "| Pinned reference | ghcr.io/msilabben/${{ inputs.image-name }}@${{ steps.build.outputs.digest }} |"
+            echo "| Pinned reference | ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }} |"
             echo "| Upstream image | ${{ inputs.image-upstream }} |"
             echo "| Source directory | ${{ inputs.context }} |"
             echo "| SBOM | attached as a signed Cosign attestation |"
