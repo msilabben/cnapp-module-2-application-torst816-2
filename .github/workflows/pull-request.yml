@@ -14,7 +14,7 @@ env:
   COSIGN_CERTIFICATE_OIDC_ISSUER: https://token.actions.githubusercontent.com
 
   SEMGREP_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/semgrep:1.165.0
-  TRIVY_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816-2/trivy:0.71.1
+  TRIVY_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/trivy:0.71.1
   CONFTEST_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/conftest:v0.68.2
 
 jobs:
