@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.8](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.7...backend@v0.4.8) (2026-06-15)
+
+
+### Bug Fixes
+
+* Docker images addgroup ([161cec4](https://github.com/msilabben/cnapp-module-2-application/commit/161cec4a2523ce8ed0ef4a3d25977a8f1b42e54c))
+* stuff ([b3faf61](https://github.com/msilabben/cnapp-module-2-application/commit/b3faf61a9208c8ee7b823d74d1c239878e643a0e))
+
 ## [0.4.7](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.6...backend@v0.4.7) (2026-06-14)
 
 
