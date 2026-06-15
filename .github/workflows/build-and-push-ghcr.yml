@@ -47,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.ACR_NAME }}.azurecr.io/${{ inputs.image-name }}
+          images: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ inputs.image-name }}
           tags: |
             type=match,pattern=${{ inputs.image-name }}@v(.*),group=1
             type=sha,prefix=sha-
