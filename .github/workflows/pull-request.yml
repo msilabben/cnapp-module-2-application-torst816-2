@@ -13,9 +13,9 @@ env:
   COSIGN_CERTIFICATE_IDENTITY: https://github.com/msilabben/cnapp-module-4-builder-torst816-2/.github/workflows/push-main.yml@refs/heads/main
   COSIGN_CERTIFICATE_OIDC_ISSUER: https://token.actions.githubusercontent.com
 
-  SEMGREP_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/semgrep:sha256-cc426eb17bb16533b1170cd784a22fa58684dd3c3d6c7355cc3fb2537bc4f476
-  TRIVY_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/trivy:sha256-352902ed9dc71d9f69f159e2303924db340d8b7a36a7f19ed5ce58a05572cb77
-  CONFTEST_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/conftest:sha256-b899735e9ab4d743c63a7f8b4879a0feed65b52795d2d27ce849b596ab672552
+  SEMGREP_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/semgrep:1.165.0
+  TRIVY_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/trivy:0.71.1
+  CONFTEST_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/conftest:v0.68.2
 
 jobs:
   pre-commit:
