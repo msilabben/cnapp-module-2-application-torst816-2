@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.5.0...backend@v0.5.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* add uv install in python sfw image ([ba92ae0](https://github.com/msilabben/cnapp-module-2-application/commit/ba92ae00f6e2b61e04bf73f5b3440a5b7a0ee59d))
+* **frontend:** trigger release ([ff5b262](https://github.com/msilabben/cnapp-module-2-application/commit/ff5b2621df6579053d38ecd0e2b05a435880432a))
+
 ## [0.5.0](https://github.com/msilabben/cnapp-module-2-application/compare/backend@v0.4.8...backend@v0.5.0) (2026-06-15)
 
 
