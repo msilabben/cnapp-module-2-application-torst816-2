@@ -10,12 +10,12 @@ permissions:
   security-events: write
 
 env:
-  COSIGN_CERTIFICATE_IDENTITY: https://github.com/msilabben/cnapp-module-4-builder/.github/workflows/push-main.yml@refs/heads/main
+  COSIGN_CERTIFICATE_IDENTITY: https://github.com/msilabben/cnapp-module-4-builder-torst816-2/.github/workflows/push-main.yml@refs/heads/main
   COSIGN_CERTIFICATE_OIDC_ISSUER: https://token.actions.githubusercontent.com
 
-  SEMGREP_IMAGE: ghcr.io/msilabben/semgrep@sha256:da164ad269e6f61d744b6cfabe852175f93f77f22db88483a67154c7310ddb1c
-  TRIVY_IMAGE: ghcr.io/msilabben/trivy@sha256:628020d30ae83c81506cf831b569bdc719a2e677d0a6e3f8ee2992069633b826
-  CONFTEST_IMAGE: ghcr.io/msilabben/conftest@sha256:018efc2db7d23a44790115c3a5fcb776bee60533d21814451c81a83f9ba2e903
+  SEMGREP_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/semgrep:sha256-cc426eb17bb16533b1170cd784a22fa58684dd3c3d6c7355cc3fb2537bc4f476
+  TRIVY_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/trivy:sha256-352902ed9dc71d9f69f159e2303924db340d8b7a36a7f19ed5ce58a05572cb77
+  CONFTEST_IMAGE: ghcr.io/torst816/cnapp-module-4-builder-torst816/conftest:sha256-b899735e9ab4d743c63a7f8b4879a0feed65b52795d2d27ce849b596ab672552
 
 jobs:
   pre-commit:
