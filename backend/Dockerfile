@@ -8,9 +8,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy
 
+RUN pip install --no-cache-dir uv
+
 COPY pyproject.toml uv.lock ./
 
-RUN uv sync --frozen --no-dev
+RUN sfw uv sync --frozen --no-dev
 
 COPY . .
 
