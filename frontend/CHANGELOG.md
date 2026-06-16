@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/msilabben/cnapp-module-2-application-torst816-2/compare/frontend@v1.4.1...frontend@v1.4.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* revert images for task ([8aad050](https://github.com/msilabben/cnapp-module-2-application-torst816-2/commit/8aad0509be4b6ee3867b338a5a345ba6d0c470c0))
+
 ## [1.4.1](https://github.com/msilabben/cnapp-module-2-application/compare/frontend@v1.4.0...frontend@v1.4.1) (2026-06-15)
 
 
