@@ -5,3 +5,4 @@ ort:
         commandLineNonConfig:
           - "--processes"
           - "1"
+      allowDynamicVersions: true
