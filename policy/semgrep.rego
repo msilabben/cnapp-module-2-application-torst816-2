@@ -5,7 +5,7 @@ config := {
   "error_level": "error",
 }
 
-error_results[result] {
+error_results contains result if {
   run := input.runs[_]
   result := run.results[_]
   rule := run.tool.driver.rules[_]
@@ -14,7 +14,7 @@ error_results[result] {
   rule.defaultConfiguration.level == config.error_level
 }
 
-deny[msg] {
+deny contains msg if {
   count(error_results) > config.max_errors
 
   msg := sprintf(

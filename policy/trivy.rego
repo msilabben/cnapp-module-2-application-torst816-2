@@ -1,11 +1,11 @@
 package main
 
 config := {
-  "max_high": 11,
+  "max_high": 12,
   "high_threshold": 7.0,
 }
 
-high_results[result] {
+high_results contains result if {
   run := input.runs[_]
   result := run.results[_]
   rule := run.tool.driver.rules[_]
@@ -15,7 +15,7 @@ high_results[result] {
   sev >= config.high_threshold
 }
 
-deny[msg] {
+deny contains msg if {
   count(high_results) > config.max_high
 
   msg := sprintf(

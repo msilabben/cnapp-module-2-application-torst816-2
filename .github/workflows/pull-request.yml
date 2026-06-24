@@ -1,96 +1,174 @@
 name: pull request
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
+  packages: read
   security-events: write
+
+env:
+  COSIGN_CERTIFICATE_IDENTITY: https://github.com/msilabben/cnapp-module-4-builder-torst816-2/.github/workflows/push-main.yml@refs/heads/main
+  COSIGN_CERTIFICATE_OIDC_ISSUER: https://token.actions.githubusercontent.com
+
+  SEMGREP_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/semgrep:1.165.0
+  TRIVY_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/trivy:0.71.1
+  CONFTEST_IMAGE: ghcr.io/msilabben/cnapp-module-4-builder-torst816-2/conftest:v0.68.2
 
 jobs:
   pre-commit:
-    if: false # Remove this to enable pre-commit
+    if: true # Remove this to enable pre-commit
     runs-on: ubuntu-22.04
     name: Run pre-commit
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
-    - uses: pre-commit/action@v3.0.1
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
 
   gitleaks:
-    if: false # Remove this to enable gitleaks
+    if: true # Remove this to enable gitleaks
     uses: ./.github/workflows/gitleaks.yml
 
   backend-tests:
-    if: false # Remove this to enable pytest
+    if: true # Remove this to enable pytest
     uses: ./.github/workflows/pytest.yml
     with:
       working-directory: backend
       python-version: "3.11"
 
-
   semgrep:
-    if: false # Remove this to enable SAST with semgrep
+    if: true # Remove this to enable SAST with semgrep
     runs-on: ubuntu-22.04
-    container:
-      image: semgrep/semgrep:1.160.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Log in to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Verify Semgrep image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${SEMGREP_IMAGE}"
 
       - name: Run Semgrep
-        run: semgrep scan --sarif --sarif-output=semgrep_results.sarif
+        run: |
+          docker run --rm \
+            --volume "$PWD:/src" \
+            --workdir /src \
+            "${SEMGREP_IMAGE}" \
+            semgrep scan --sarif --sarif-output=semgrep_results.sarif
 
       - name: Upload Semgrep SARIF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: semgrep-results
           path: semgrep_results.sarif
 
       - name: Upload Semgrep SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e
         with:
           sarif_file: semgrep_results.sarif
           category: semgrep
 
   trivy:
-    if: false # Remove this to enable SAST/SCA with trivy
+    if: true # Remove this to enable SAST/SCA with trivy
     runs-on: ubuntu-22.04
-    container:
-      image: aquasec/trivy:0.70.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Log in to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Verify Trivy image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${TRIVY_IMAGE}"
 
       - name: Run Trivy
-        run: trivy fs --format sarif -o trivy_results.sarif --scanners vuln,config,secret,license .
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --volume "$HOME/.cache/trivy:/root/.cache/trivy" \
+            --workdir /work \
+            "${TRIVY_IMAGE}" \
+            fs \
+            --format sarif \
+            --output trivy_results.sarif \
+            --scanners vuln,misconfig,license \
+            --include-dev-deps \
+            .
 
       - name: Upload Trivy SARIF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: trivy-results
           path: trivy_results.sarif
 
       - name: Upload Trivy SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e
         with:
           sarif_file: trivy_results.sarif
           category: trivy
 
   opa:
-    if: false # Remove this to enable Policy as Code (PaC) with Open Policy Agent
+    if: true # Remove this to enable Policy as Code (PaC) with Open Policy Agent
     needs: [semgrep, trivy]
     runs-on: ubuntu-22.04
-    container:
-      image: openpolicyagent/conftest:v0.59.0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Log in to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Verify Conftest image signature
+        run: |
+          cosign verify \
+            --certificate-identity "${COSIGN_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${COSIGN_CERTIFICATE_OIDC_ISSUER}" \
+            "${CONFTEST_IMAGE}"
 
       - name: Download SARIF artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
 
       - name: Verify Semgrep findings
-        run: conftest test semgrep-results/semgrep_results.sarif --parser json --policy policy/semgrep.rego
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${CONFTEST_IMAGE}" \
+            test semgrep-results/semgrep_results.sarif --parser json --policy policy/semgrep.rego
 
       - name: Verify Trivy findings
-        run: conftest test trivy-results/trivy_results.sarif --parser json --policy policy/trivy.rego
-
- 
+        run: |
+          docker run --rm \
+            --volume "$PWD:/work" \
+            --workdir /work \
+            "${CONFTEST_IMAGE}" \
+            test trivy-results/trivy_results.sarif --parser json --policy policy/trivy.rego
